@@ -1,14 +1,35 @@
 package ru.shcheglov.cloud;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-@FeignClient(name = "AccountService", fallback = AccountServiceFallback.class)
-public interface AccountServiceClient {
-    @RequestMapping("/checkout/{id}")
-    boolean checkout(@PathVariable("id") Integer accountId, @RequestParam("sum") BigDecimal sum);
+@Component
+public class AccountServiceClient {
+
+    @Autowired
+    private OAuth2RestTemplate oAuth2RestTemplate;
+
+    public boolean checkout(Integer accountId, BigDecimal sum) {
+        String token = ((OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getTokenValue();
+        return checkout(token, accountId, sum);
+    }
+
+    @HystrixCommand(fallbackMethod = "checkoutFallback")
+    private boolean checkout(String token, Integer accountId, BigDecimal sum) {
+        oAuth2RestTemplate.getOAuth2ClientContext().setAccessToken(new DefaultOAuth2AccessToken(token));
+        String url = "http://AccountService/checkout/" + accountId.toString() + "?sum=" + sum.toPlainString();
+        return oAuth2RestTemplate.getForObject(url, Boolean.class);
+    }
+
+    private boolean checkoutFallback(String token, Integer accountId, BigDecimal sum) {
+        return false;
+    }
 }
+

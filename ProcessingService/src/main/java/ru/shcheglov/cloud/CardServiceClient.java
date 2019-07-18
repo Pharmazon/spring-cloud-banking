@@ -1,10 +1,25 @@
 package ru.shcheglov.cloud;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.stereotype.Component;
 
-@FeignClient(name = "CardService", fallback = CardServiceFallback.class)
-public interface CardServiceClient {
-    @RequestMapping("create")
-    String createCard();
+@Component
+public class CardServiceClient {
+
+    @Autowired
+    @Qualifier("OAuth2CardService")
+    private OAuth2RestTemplate oAuth2CardService;
+
+    @HystrixCommand(fallbackMethod = "createCardFallback")
+    public String createCard() {
+        return oAuth2CardService.getForObject("http://CardService/create", String.class);
+    }
+
+    private String createCardFallback() {
+        return null;
+    }
 }
+

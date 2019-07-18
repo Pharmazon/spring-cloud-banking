@@ -43,5 +43,7 @@
         <module>TurbineServer</module>
         <module>ZipkinServer</module>
         <module>Zuul</module>
+        <module>AuthServer</module>
+        <module>AuthService</module>
     </modules>
 </project>
