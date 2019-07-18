@@ -1,0 +1,10 @@
+server.port: 8600
+spring:
+  application.name: ConfigServer
+  cloud:
+    config:
+      server:
+        bootstrap: true
+        git:
+          force-pull: true
+          uri: file:./configs
