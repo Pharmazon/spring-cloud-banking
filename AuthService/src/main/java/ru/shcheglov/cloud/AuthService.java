@@ -6,6 +6,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Request token
  * POST http://localhost:8500/uaa/oauth/token?grant_type=password&username=account&password=account
+ * grantType: password
+ * login: account
+ * password: account
+ * clientId: client
+ * clientSecret: secret
+ * scope: openid
  */
 
 @SpringBootApplication
