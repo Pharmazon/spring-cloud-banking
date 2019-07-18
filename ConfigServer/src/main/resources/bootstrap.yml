@@ -7,4 +7,4 @@ spring:
         bootstrap: true
         git:
           force-pull: true
-          uri: file:./configs
+          uri: file:./config-repo
