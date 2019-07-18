@@ -1,0 +1,13 @@
+Check security
+-------------------------
+1) Get JWT token from UAA server in RESTLET:
+	POST 
+	http://localhost:8500/uaa/oauth/token?grant_type=password&username=account&password=account
+Copy access_token to buffer
+
+2) Open AccountService, go to some method like
+	http://localhost:8802/create?client_id=1
+	Add header:
+		Authorization: Bearer <ACCESS_TOKEN>
+
+3) Get tokens for other services, use appropriate tokens		
