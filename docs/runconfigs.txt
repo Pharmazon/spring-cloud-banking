@@ -1,0 +1,32 @@
+To run the project configure each service via VM options:
+
+Eureka-8702: -Dspring.profiles.active=8702 -Xmx128m
+Eureka-8701: -Dspring.profiles.active=8701 -Xmx128m
+ProcessingService-8805: -Dspring.profiles.active=8805 -Xmx128m
+Processor-8004: -Dspring.profiles.active=8004 -Xmx128m
+WordNumSplitter-8006: -Dspring.profiles.active=8006 -Xmx128m
+Others: -Xmx128m
+
+The startup sequence:
+SpringCloudApplication
+- ConfigServer
+- Eureka
+- AuthService
+- Others (any order)
+    - ClientService
+    - AccountService
+    - ProcessingService
+    - CardService
+    - Zuul
+    - ZipkinServer (required RabbitMQ + Erlang)
+    - TurbineServer (required RabbitMQ + Erlang)
+    - Dashboard (required RabbitMQ + Erlang)
+SpringCloudStreams (required RabbitMQ + Erlang)
+- ConfigServer
+- Others (any order)
+    - Publisher
+    - Subscriber
+    - Processor
+    - HistoryService
+    - Aggregator
+    - WordNumSplitter
