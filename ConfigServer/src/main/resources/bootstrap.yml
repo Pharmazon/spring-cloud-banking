@@ -7,4 +7,4 @@ spring:
         bootstrap: true
         git:
           force-pull: true
-          uri: file:./config-repo
+          uri: https://github.com/Pharmazon/spring-cloud-banking-configs.git
