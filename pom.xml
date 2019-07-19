@@ -56,5 +56,6 @@
         <module>Subscriber</module>
         <module>Processor</module>
         <module>WordNumSplitter</module>
+        <module>Aggregator</module>
     </modules>
 </project>

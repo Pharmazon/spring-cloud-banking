@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SpringBootApplication
-@EnableBinding(TestChannel.class)
+@EnableBinding(SubscriberChannel.class)
 @RestController
 public class Subscriber {
 
@@ -23,7 +23,7 @@ public class Subscriber {
         return wordMap;
     }
 
-    @StreamListener(TestChannel.CHANNEL_NAME)
+    @StreamListener(SubscriberChannel.UPPER_WORDS)
     public void countWords(String s) {
         if (wordMap.containsKey(s)) {
             wordMap.get(s).incrementAndGet();

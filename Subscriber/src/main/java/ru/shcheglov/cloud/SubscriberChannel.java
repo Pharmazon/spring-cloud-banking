@@ -10,4 +10,3 @@ public interface SubscriberChannel {
     @Input(UPPER_WORDS)
     SubscribableChannel upperWords();
 }
-
