@@ -18,6 +18,9 @@ public class AccountRest {
     @Autowired
     private AccountRepository repo;
 
+    @Autowired
+    private RemoteEventPublisher eventPublisher;
+
     @PreAuthorize("hasAuthority('ACCOUNT_WRITE')")
     @RequestMapping("/create")
     public void create(@RequestParam("client_id") Integer clientId) {
@@ -25,13 +28,24 @@ public class AccountRest {
     }
 
     @RequestMapping("/fund/{id}")
-    public boolean fund(@PathVariable Integer id, @RequestParam BigDecimal sum) {
-        return dao.addBalance(id, sum.abs());
+    public boolean fund(@PathVariable Integer id,
+                        @RequestParam BigDecimal sum) {
+        try {
+            return dao.addBalance(id, sum.abs());
+        } finally {
+            eventPublisher.publishEvent(new FundEvent("AccountService", "HistoryService", sum));
+        }
     }
 
     @RequestMapping("/checkout/{id}")
-    public boolean checkout(@PathVariable Integer id, @RequestParam BigDecimal sum) {
-        return dao.addBalance(id, sum.abs().negate());
+    public boolean checkout(@PathVariable Integer id,
+                            @RequestParam BigDecimal sum) {
+        BigDecimal negativeSum = sum.abs().negate();
+        try {
+            return dao.addBalance(id, negativeSum);
+        } finally {
+            eventPublisher.publishEvent(new WithdrawEvent("AccountService", "HistoryService", negativeSum));
+        }
     }
 
     @RequestMapping("/get/{clientId}")

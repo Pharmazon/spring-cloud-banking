@@ -1,0 +1,25 @@
+POST http://localhost:8803/bus/env?test=3
+POST http://localhost:8803/bus/refresh
+GET http://localhost:8803/test
+3
+
+CardService.yml:
+test: 7
+POST http://localhost:9803/bus/refresh
+GET http://localhost:9803/test
+7
+
+config git folder:
+CardService.yml:
+test: 6
+
+@RestConstroller
+@RefreshScope
+class CardServiceRest {
+  @Value("${test}")
+  String test;
+
+  @RequestMapping("/test")
+  public String test() {
+    return test;
+  }
