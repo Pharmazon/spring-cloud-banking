@@ -1,0 +1,15 @@
+add spring-boot-actuator
+add @RefreshScope to class
+inject using @Value
+
+GET http://localhost:8803/bus/env
+Get all properties from config
+
+POST http://localhost:8803/bus/env?test=1
+Update in yml parameter test to 1
+
+POST http://localhost:8803/bus/refresh
+Refresh parameters in yml
+
+GET http://localhost:8803/test
+Get current parameter value
